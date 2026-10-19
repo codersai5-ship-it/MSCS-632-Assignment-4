@@ -18,7 +18,14 @@ def demo_employees():
 
 def collect_employees():
     print("Enter at least 9 employees (12 recommended).")
-    count = int(input("Number of employees: "))
+    while True:
+        try:
+            count = int(input("Number of employees: "))
+            if count >= 9:
+                break
+            print("At least 9 employees are required to cover all shifts.")
+        except ValueError:
+            print("Please enter a valid whole number.")
     employees = {}
     for i in range(count):
         while True:
@@ -107,7 +114,12 @@ def validate(schedule, days_worked):
 def main():
     print("EMPLOYEE SHIFT SCHEDULING SYSTEM (PYTHON)")
     mode = input("Use demo employees? [Y/n]: ").strip().lower()
-    employees = demo_employees() if mode != "n" else collect_employees()
+    if mode == "n":
+        print("\nINTERACTIVE MODE: Enter employee names and seven daily preferences.")
+        employees = collect_employees()
+    else:
+        print("\nDEMO MODE: Using 12 sample employees.")
+        employees = demo_employees()
     try:
         schedule, days_worked, events = schedule_week(employees)
     except ValueError as error:
