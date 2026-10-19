@@ -30,7 +30,17 @@ public class EmployeeScheduler {
     static Map<String, String[]> collectEmployees(Scanner input) {
         System.out.println("Enter at least 9 employees (12 recommended).");
         System.out.print("Number of employees: ");
-        int count = Integer.parseInt(input.nextLine().trim());
+        int count;
+        while (true) {
+            System.out.print("Enter a whole number (9 or more): ");
+            try {
+                count = Integer.parseInt(input.nextLine().trim());
+                if (count >= 9) break;
+                System.out.println("At least 9 employees are required to cover all shifts.");
+            } catch (NumberFormatException error) {
+                System.out.println("Please enter a valid whole number.");
+            }
+        }
         Map<String, String[]> employees = new LinkedHashMap<>();
         for (int i = 0; i < count; i++) {
             String name;
@@ -168,8 +178,11 @@ public class EmployeeScheduler {
         System.out.print("Use demo employees? [Y/n]: ");
         String mode = input.nextLine().trim();
         try {
-            Map<String, String[]> employees = mode.equalsIgnoreCase("n")
-                    ? collectEmployees(input) : demoEmployees();
+            boolean interactive = mode.equalsIgnoreCase("n");
+            System.out.println(interactive
+                    ? "\nINTERACTIVE MODE: Enter employee names and seven daily preferences."
+                    : "\nDEMO MODE: Using 12 sample employees.");
+            Map<String, String[]> employees = interactive ? collectEmployees(input) : demoEmployees();
             scheduleWeek(employees);
         } catch (IllegalArgumentException | IllegalStateException error) {
             System.out.println("Scheduling failed: " + error.getMessage());
